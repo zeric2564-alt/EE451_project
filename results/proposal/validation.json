@@ -1,0 +1,63 @@
+{
+  "geometry": {
+    "passed": true,
+    "bvh_linear_rays": 52000
+  },
+  "image_equivalence": {
+    "passed": true,
+    "comparisons": 131,
+    "invalid_cli_cases": 6
+  },
+  "integration": {
+    "passed": true,
+    "tests": 3,
+    "covers": [
+      "PNG decoding and PPM equivalence",
+      "timing CSV",
+      "fixed region counters across schedules",
+      "malformed OBJ rejection"
+    ]
+  },
+  "web": {
+    "passed": true,
+    "tests": 2,
+    "covers": [
+      "HTTP validation",
+      "native Bunny render",
+      "status polling",
+      "PNG download"
+    ]
+  },
+  "sanitizers": {
+    "address": true,
+    "undefined_behavior": true,
+    "covers": [
+      "geometry suite including full Bunny",
+      "parallel sphere render",
+      "parallel Bunny render with counters and PNG"
+    ],
+    "thread_sanitizer": "not run"
+  },
+  "visual_review": {
+    "rendered_bunny": "inspected",
+    "web_browser": "Native Safari: initial settings UI and completed room render inspected; PNG, timings, actual workers and download link displayed.",
+    "report_browser": "Unavailable: no browser connected. HTML structure and embedded assets checked separately."
+  },
+  "notes": "All checks use the new implementation. Historical Linux results are not reused.",
+  "metrics": {
+    "passed": true,
+    "tests": 5,
+    "covers": [
+      "all zero",
+      "P10 zero fallback",
+      "positive quantile ratio",
+      "uniform workload",
+      "interpolated quantiles"
+    ]
+  },
+  "asset": {
+    "sha256_verified": true,
+    "triangles": 69451,
+    "vertices": 35947
+  }
+}

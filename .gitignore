@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+.DS_Store
+/tmp/
+/raytrace
+/test_core
+/*_san
+/web/jobs/
+assets/bunny.tar.gz
+/output/
+*.dSYM/

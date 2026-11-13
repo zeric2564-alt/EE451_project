@@ -1,0 +1,43 @@
+{
+  "start_utc": "2026-11-13T02:12:49.750853+00:00",
+  "platform": "macOS-15.6.1-arm64-arm-64bit-Mach-O",
+  "logical_cpus": 8,
+  "cpu": "Command '['sysctl', '-n', 'machdep.cpu.brand_string', 'hw.physicalcpu', 'hw.logicalcpu', 'hw.memsize']' returned non-zero exit status 1.",
+  "compiler": "g++-16 (Homebrew GCC 16.2.0) 16.2.0\nCopyright (C) 2026 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+  "runtime": "/Users/ericz/EE451_project/raytrace:\n\t/opt/homebrew/opt/gcc/lib/gcc/current/libstdc++.6.dylib (compatibility version 7.0.0, current version 7.36.0)\n\t/opt/homebrew/opt/gcc/lib/gcc/current/libgomp.1.dylib (compatibility version 2.0.0, current version 2.0.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1351.0.0)",
+  "affinity": "OS-managed; binding unsupported by libgomp on macOS",
+  "cpu_quota": null,
+  "environment": {
+    "OMP_DYNAMIC": "FALSE",
+    "OMP_PROC_BIND": "FALSE",
+    "OMP_WAIT_POLICY": "PASSIVE"
+  },
+  "flags": "-O3 -std=c++17 -fopenmp -Wall -Wextra -Wpedantic",
+  "binary_sha256": "1670b6eedc1adb2c210d9ebff00e761b2693989f282c39634f12d515bb9dbbe6",
+  "sources": {
+    "src/png.hpp": "c4f32ef8116b6861e808f8f80ef59be56e85a00c19f19d3d6e973db4b5b615c1",
+    "src/main.cpp": "ee26300db41346a603cd83b1a035d6498c18bbd3bcf65c7433d6a354df1d5a80",
+    "src/core.hpp": "8625c9dc66a71ce8986a8bdd68e4e9ad60772e9047405440faa6d14e7ea15cf7"
+  },
+  "arguments": {
+    "stage": "all",
+    "threads": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "repeats": 5
+  },
+  "confirmed_hardware": {
+    "cpu": "Apple M3",
+    "physical_cores": 8,
+    "logical_cores": 8,
+    "memory_bytes": 17179869184,
+    "source": "sysctl -n machdep.cpu.brand_string hw.physicalcpu hw.logicalcpu hw.memsize",
+    "affinity": "OS-managed; macOS libgomp reports affinity unsupported",
+    "note": "Heterogeneous performance/efficiency cores; worker count does not imply equal-performance dedicated cores."
+  },
+  "completed_utc": "2026-11-13T02:16:35.361751+00:00",
+  "rows": 120
+}

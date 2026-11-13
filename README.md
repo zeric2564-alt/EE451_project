@@ -1,132 +1,94 @@
-# EE451: OpenMP Parallel CPU Ray Tracer
+# EE451 · Multicore CPU Path Tracing
 
-A complete offline rendering application and controlled parallel-performance experiment.
-The same C++17 path-tracing kernel runs serially, by scanline, or by image tile.
-This is an **application implementation and evaluation** project, not a claim of a new rendering algorithm or a faster-than-state-of-the-art scheduler.
+Implementation of **EE451_Proposal.pdf**, including the required 69,451-triangle Stanford Bunny, room area light, uneven-material scene, five execution modes, independent spatial diagnostics, controlled experiments, final report and local web demo.
 
-## Quick start
+- [Proposal requirement map](PROPOSAL_CHECKLIST.md)
+- [Final report](report/proposal/report.html) — self-contained HTML, actual retained measurements
+- [Presentation](report/proposal/presentation.html) — offline HTML slides, arrow keys to navigate
+- [Raw results and hardware](results/proposal/)
+- [中文说明](README_CN.md)
 
-Requires a C++17 compiler with OpenMP, Make, and Python 3. The renderer and correctness tests have no third-party runtime dependencies other than OpenMP.
-The supplied Makefile was tested with GCC 13.3.0 on Linux. On Windows, use a Linux/WSL environment or adapt the build to an OpenMP-enabled compiler. Apple Clang alone may require a separately installed OpenMP runtime.
+## Build and run
 
-```bash
+C++17, OpenMP and Make are required. Linux: GCC with libgomp. macOS: Homebrew GCC (`brew install gcc` if missing); the Makefile selects a Homebrew `g++-*`, because Apple's `g++` is Clang without bundled OpenMP. Override with `make CXX=/path/to/compiler` when needed. Run commands from the repository root.
+
+```sh
 make -j2
 make test
-./raytrace --scene many --mode tile-dynamic --threads 4 \
-  --width 640 --height 360 --spp 64 --depth 10 --tile 16 --output render.ppm
+./raytrace --scene bunny --mode tile-dynamic --threads 8 \
+  --width 512 --height 512 --spp 32 --depth 10 \
+  --output bunny.png --timing timing.csv
+python3 web/server.py
+# Open http://127.0.0.1:8000
 ```
 
-PPM is a standard uncompressed image format. To convert to PNG with Pillow:
+The CLI and web server use only standard libraries plus OpenMP. The packaged Bunny OBJ needs no download. See [asset provenance and conversion](assets/README.md). Rebuild the executable on your machine; binaries are not tracked.
 
-```bash
-python3 -c "from PIL import Image; Image.open('render.ppm').save('render.png')"
+For analysis and PNG integration tests:
+
+```sh
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+.venv/bin/python tests/test_proposal.py
+.venv/bin/python tests/test_web.py
 ```
 
-For charts and the self-contained HTML report, install `requirements.txt` in your preferred Python environment:
+## Rendering and diagnostics
 
-```bash
-python3 -m pip install -r requirements.txt
-python3 benchmarks/run_benchmarks.py --width 400 --height 225 --spp 24 --repeats 5
-python3 benchmarks/run_benchmarks.py --width 400 --height 225 --spp 24 \
-  --repeats 5 --sweep --output results/sweep.csv
-python3 benchmarks/run_extra.py
-python3 benchmarks/analyze.py
+Scenes: `room`, `uneven`, `bunny`, and supplementary `bunny-mixed`. Legacy `simple`, `many`, `clustered` scenes remain available. All modes share the same sphere/triangle intersection, median-split BVH, deterministic sampling and diffuse/metal/glass/emissive material rules. Triangle shading uses flat geometric normals. Scene generation and BVH construction are serial. The room uses emissive triangles with random-walk light gathering and no sky; it can be noisy without explicit next-event sampling.
+
+Modes: `serial`, `row-static`, `row-dynamic`, `tile-static`, `tile-dynamic`. Static uses contiguous worksharing. Dynamic uses `--chunk` rows/tiles per claim (default 1). `--tile` is the scheduling tile side. All sample streams are keyed by global `--seed`, pixel and sample index; workers write disjoint pixels.
+
+```sh
+./raytrace --scene bunny --mode tile-dynamic --threads 8 \
+  --width 512 --height 512 --spp 32 --tile 16 \
+  --regions regions.csv --diagnostics threads.csv
 ```
 
-Choose `--threads 1 2 4` if fewer than 8 CPUs are available. The main benchmark rejects a run if OpenMP does not supply the requested number of workers. Inspect both CPU affinity and container CPU quota; visible CPUs alone do not guarantee equivalent compute capacity. `run_extra.py --threads N` controls its cold-run and preview worker count.
+`--regions` enables worker-private counters aggregated into fixed **32×32 measurement regions**, irrespective of scheduling tile size. Metrics: traced ray segments, successful surface-interaction depth sum, visited BVH nodes (including rejected boxes) and triangle intersection attempts. `--diagnostics` records per-worker task counts, pixels, summed task duration and last-task finish time. These instrumented runs are separate from performance measurements. The report calculates LI=max(busy)/mean(busy)-1 and conditional P90/P10, max/mean or no-ratio for zero regional data.
 
-## Implementation
+`--raw image.f64` writes native float64 RGB for exact comparisons. `--output image.png` writes RGB8 PNG; other extensions retain legacy binary PPM behavior. PNG uses standards-compliant uncompressed DEFLATE, so output cost is specific to this encoder. `--mesh file.obj` selects a triangulated OBJ input for the Bunny scenes; positive/negative vertex references and slash-separated face tokens are supported. Polygon faces are fan-triangulated. `--help` lists all arguments.
 
-- Three reproducible built-in scenes: `simple` (5 spheres), `many` (223 spheres), and `clustered` (110 spheres). All include a ground sphere.
-- Pinhole camera, diffuse/rough-metal/dielectric materials, stochastic scattering, sky illumination, bounded path depth, gamma-2 display conversion.
-- A median-split binary BVH, with up to four spheres per leaf, accelerates intersection in **every** version, including the serial reference. BVH construction is serial and measured as setup.
-- Every pixel/sample has a deterministic SplitMix64 stream keyed by global seed, pixel index, and sample index. Streams do not depend on worker identity or scheduling. Each pixel sums samples in a fixed order.
-- Each task owns a disjoint region of the image. Scene/BVH data are read-only during rendering, and no shared RNG or pixel lock is used. Pixels on tile boundaries are clipped correctly.
-- Parallel versions run a single OpenMP region with a worksharing loop. The same pixel function is called by all modes; only the row/tile task mapping and schedule change.
-- `serial` uses an ordinary loop (not a one-thread OpenMP loop). `row-static` and `tile-static` use contiguous static worksharing. `row-dynamic` and `tile-dynamic` use dynamic worksharing; `--chunk` specifies how many rows/tiles are claimed at once. The main experiment fixes tiles at 16×16 and dynamic chunk size at 1 before measuring; it does not select a winning tile size after the fact.
+## Timing boundaries
 
-## CLI
+- `loading_s`: scene generation / OBJ parsing and normalization.
+- `bvh_s`: serial BVH construction; `setup_s` also includes image allocation.
+- `render_s`: pixel loop / OpenMP region, including launch and synchronization. Per-render camera metadata, counter allocation and post-render counter reduction are outside it.
+- `png_s`: RGB conversion, encoding and PNG write. `output_s` also covers any raw/PPM output.
+- `end_to_end_s`: cumulative in-program time since startup, including warmup and previous repeats if requested, but excluding final JSON/CSV printing and process launch/exit.
+- Python `process_wall_s`: full child-process elapsed time. In warmed experiments it includes **two renders**; only `cold.csv` measures a single fresh-process frame including PNG output.
 
-Run `./raytrace --help` for all arguments. Standard output contains one JSON record per measured render. Standard error reports file-writing and total in-program time.
+`--repeats` prints one JSON/CSV row per render and overwrites image/diagnostic paths with the last frame. Expensive counters are disabled unless explicitly requested.
 
-| Option | Meaning |
+## Reproduce the study
+
+```sh
+python3 benchmarks/proposal.py --stage all
+.venv/bin/python benchmarks/report_proposal.py
+```
+
+The runner is resumable and skips already-recorded configuration/round keys. It refuses to append after the executable hash changes. To perform a fresh reproduction, first move `results/proposal` to a named archive, recreate that directory, and record your hardware in `hardware.json`; do not mix machines or binaries in one dataset. Metadata records the actual compiler/runtime, environment and hashes. The report supplied here represents the recorded Apple M3 run. Its default full-study validation expects 1/2/4/8 workers and the documented configuration counts; adapt analysis if intentionally running a reduced study on smaller hardware.
+
+Stages run **sequentially**, never concurrent timing workloads:
+
+| Stage | Configurations and retained measurements |
 |---|---|
-| `--scene simple\|many\|clustered` | Deterministic built-in geometry |
-| `--mode serial\|row-static\|row-dynamic\|tile-static\|tile-dynamic` | Execution variant |
-| `--width`, `--height` | Output resolution |
-| `--spp` | Samples per pixel; identical across compared versions |
-| `--depth` | Maximum path depth; identical across compared versions |
-| `--threads` | Requested OpenMP workers; serial always uses one |
-| `--tile` | Square tile side length in pixels |
-| `--chunk` | Dynamic scheduling chunk measured in rows/tiles |
-| `--seed` | Global deterministic sampling seed |
-| `--warmup 0\|1` | Optional unmeasured complete render |
-| `--repeats` | Measured rerenders of the already-built scene |
-| `--output` | Optional binary PPM image |
-| `--raw` | Optional native float64 RGB triples, for exact comparisons |
-| `--diagnostics` | Per-thread CSV; enables instrumentation, excluded from main timing runs |
+| main | Three scenes; serial + four modes × 1/2/4/8 workers; five rounds = 255 |
+| tiles | Three scenes; static/dynamic × 8/16/32/64 tile sides; five rounds = 120 |
+| quality | Five selected scene/resolution/spp combinations; serial and 8-worker tile-dynamic; five rounds = 50 |
+| cold | Three scenes; serial and 8-worker tile-dynamic; no warmup; five rounds = 30 |
+| diagnostics | Three scenes plus mixed Bunny; four modes; independent region and worker profiles = 16 |
 
-`render_s` includes the parallel-region launch, worksharing/synchronization, and all pixel computations, but excludes scene/BVH setup, per-call camera/task metadata and statistics-buffer initialization, image hashing, and file output. The timer starts immediately before the task loop or OpenMP region. `setup_s` includes scene/BVH construction and image allocation. `setup_plus_render_s` adds these two stages and is **not** full process end-to-end time. With repeated renders, adding setup represents a fresh-setup-equivalent cost, not a repeated actual setup.
+Main and tile experiments use 512² / 32 spp / depth 10. Quality selections: room 512²/64 and 1024²/64; uneven 512²/128; Bunny 1024²/32 and 1024²/128. They cover the proposal's selected workload settings without claiming a full quality-grid study. Every timed configuration gets a full warmup and five measured samples except intentionally un-warmed cold measurements. Configuration order is randomized within each round with seed 451. All hash comparisons use matching scene, dimensions, spp, depth and seed.
 
-The main runner uses one full warmup per process and one measured render. `process_wall_s` there includes warmup and subprocess overhead and must **not** be used as one-render end-to-end time. `cold.csv`, produced by `run_extra.py`, separately measures fresh-process wall time without warmup, including image output and process overhead.
+Native M3 results are affected by heterogeneous cores, OS-managed affinity and desktop activity. Speedup is measured against this same BVH-equipped serial renderer, not a production rendering library. Five observations and min–max ranges do not establish statistical significance. See the report for cases where dynamic scheduling loses.
 
-## Correctness and validation
+## Verification and historical results
 
-`tests/test_core.cpp` checks analytic sphere hits/misses/inside hits, axis-parallel bounding-box rays, empty scenes, and 30,000 random BVH intersections against independent linear sphere traversal.
+`make test` runs analytic geometry, 52,000 BVH/linear comparisons and exact raw-image comparisons. `tests/test_proposal.py` checks schedule-independent region counts, PNG decoding/PPM equivalence, timing CSV and malformed meshes. `tests/test_web.py` checks the real HTTP job lifecycle and input rejection. Actual outcomes are retained in `results/proposal/validation.json` and logs.
 
-`tests/run_correctness.py` compares actual float64 output bytes across all four parallel modes, supported thread counts, odd image dimensions, tile sizes 1/16/128, and narrow images. It checks finite nonnegative pixels, argument rejection, and that different seeds produce different images. This proves deterministic equivalence for tested inputs, not physical accuracy against an external production renderer.
+`make sanitize` requests AddressSanitizer/UBSan where the selected compiler supports them. Do not reuse the old Linux sanitizer log as proof about the new code or your platform.
 
-```bash
-make sanitize
-```
+The original `results/*.csv`, `report/results.html`, `images/` and old benchmark scripts concern the earlier sphere-only experiment. They are preserved for provenance and are **not the final proposal results**. Original README content is archived under `report/legacy_README*.md`. The old SHA256SUMS file is likewise historical; `scripts/package.py` produces a new checked handoff archive.
 
-On restricted containers where LeakSanitizer cannot inspect `/proc`, use `ASAN_OPTIONS=detect_leaks=0 make sanitize`. That disables leak detection only; address and undefined-behavior checking remain active. This environment required that setting. A thread race sanitizer was not run; disjoint output ownership and schedule-invariant byte comparisons support, but do not formally prove, race freedom.
-
-## Experimental design
-
-- Main comparison: 3 scenes × (serial + 4 parallel modes × 4 thread counts) × 5 rounds = 255 measured renders; each has a full warmup.
-- Resolution 400×225, 24 samples/pixel, maximum depth 10, global seed 451.
-- Configuration order is shuffled within each complete round with seed 451. All image hashes must agree within each scene.
-- Same executable and `-O3 -std=c++17 -fopenmp`, without `-ffast-math` or architecture-specific flags.
-- Environment: `OMP_DYNAMIC=FALSE`, `OMP_PROC_BIND=close`, `OMP_PLACES=cores`, `OMP_WAIT_POLICY=PASSIVE`.
-- Report medians and min–max spread; speedup = median serial render time / median parallel render time; efficiency = speedup / actual workers. Spread is not a confidence interval.
-- Separate tile/chunk sensitivity experiment; all configurations are retained, with no claim that the best observed choice generalizes.
-- Thread diagnostics are separate instrumented renders; `active_s` sums task processing times, while `finish_s` is relative to rendering start and includes waiting/scheduling effects. These are not the same metric. Diagnose scheduling patterns cautiously.
-- Cold process measurements include image output to temporary local storage; filesystem caching and virtualization still affect them. They are not cold-hardware-cache measurements.
-
-## Files and reproduction
-
-```text
-src/core.hpp               Geometry, BVH, sampling, scenes, shading
-src/main.cpp               CLI, task mapping, OpenMP, timing, output
-tests/                    Analytic and image-equivalence tests
-benchmarks/               Measurement, sensitivity, diagnostics, analysis
-results/raw.csv           Every main measured configuration
-results/sweep.csv         Every sensitivity measurement
-results/cold.csv          No-warmup fresh-process measurements
-results/*.metadata.json   Environment, arguments, quota, timestamps
-results/correctness.json  Exact pixel-comparison results
-results/sanitizers.log    Actual sanitizer run output
-results/summary.csv       Aggregated medians, spread, speedup, efficiency
-images/                   Actual rendered PNG examples
-report/                   Self-contained HTML report and charts
-```
-
-The project archive excludes platform-specific binaries; rebuild with `make`. Scene generation requires no downloads. Examples are actual program output, not generated illustrations. Raw CSVs are the authority for all reported timings.
-
-## Scope and limits
-
-This is a small educational offline path tracer: no GUI, external mesh loader, textures, explicit area-light sampling, denoiser, GPU path, or MPI. Fixed-depth truncation and the simple material model limit rendering realism. Parallel speedup over this fair serial implementation does not imply a new algorithm or superiority over professional renderers. Results from one virtualized machine are evidence of feasibility, not a guarantee for a user's computer or a course grade.
-
-For a three-person team: one member can own rendering/BVH/correctness, one task mapping/OpenMP, and one experiments/analysis; all should review and understand the full project. Code and experiment automation here were produced with AI assistance; follow course attribution and permitted-use rules.
-
-## References
-
-Implementation written for this project; standard rendering and parallelization ideas are established:
-
-1. Peter Shirley, Trevor David Black, Steve Hollasch, *Ray Tracing in One Weekend*. https://raytracing.github.io/books/RayTracingInOneWeekend.html
-2. Same authors, *Ray Tracing: The Next Week* (BVH concepts). https://raytracing.github.io/books/RayTracingTheNextWeek.html
-3. Pharr et al., *Physically Based Rendering*, Parallelization of pbrt. https://pbr-book.org/3ed-2018/Introduction/Parallelization_of_pbrt
-4. Pharr et al., *Physically Based Rendering*, System Overview (image tiles). https://pbr-book.org/3ed-2018/Introduction/pbrt_System_Overview
-
-These references explain the concepts; no claim of original invention is made.
+AI assistance was used for implementation and automation. Team members should understand and review the code and follow course attribution requirements. See the final report and assets README for references and dataset terms.

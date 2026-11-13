@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Compare actual float64 pixel bytes, not just display images or checksums."""
+import argparse
 import json
 import os
 from pathlib import Path
@@ -9,14 +10,20 @@ import tempfile
 import math
 
 ROOT = Path(__file__).resolve().parents[1]
+parser = argparse.ArgumentParser()
+parser.add_argument('--output', default='results/proposal/correctness.json')
+options = parser.parse_args()
 env = dict(os.environ, OMP_DYNAMIC="FALSE", OMP_PROC_BIND="close", OMP_PLACES="cores")
+if os.uname().sysname == "Darwin":
+    env["OMP_PROC_BIND"] = "FALSE"
+    env.pop("OMP_PLACES", None)
 available = len(os.sched_getaffinity(0)) if hasattr(os, "sched_getaffinity") else os.cpu_count()
 threads = [n for n in [1, 2, 4, 8] if n <= available]
 cases = 0
 records = []
 with tempfile.TemporaryDirectory() as folder:
     target = Path(folder) / "pixels.f64"
-    for scene in ["simple", "many", "clustered"]:
+    for scene in ["room", "uneven", "bunny", "bunny-mixed"]:
         base = [str(ROOT / "raytrace"), "--scene", scene, "--width", "67", "--height", "39", "--spp", "5", "--depth", "9", "--raw", str(target)]
         def run(mode, n, tile=16):
             p = subprocess.run(base + ["--mode", mode, "--threads", str(n), "--tile", str(tile)], capture_output=True, text=True, env=env, check=True)
@@ -51,5 +58,6 @@ with tempfile.TemporaryDirectory() as folder:
     assert json.loads(a.stdout)["hash"] != json.loads(b.stdout)["hash"]
 result = dict(passed=True, parallel_image_comparisons=cases, invalid_cli_cases=6, checked_threads=threads, records=records)
 (ROOT / "results").mkdir(exist_ok=True)
-(ROOT / "results" / "correctness.json").write_text(json.dumps(result, indent=2))
+(ROOT / options.output).parent.mkdir(parents=True, exist_ok=True)
+(ROOT / options.output).write_text(json.dumps(result, indent=2))
 print(f"PASS: {cases} exact float64 image comparisons; 6 invalid CLI cases; independent seeds")

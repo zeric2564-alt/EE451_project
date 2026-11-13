@@ -1,0 +1,7 @@
+/opt/homebrew/bin/g++-16 -Isrc -O1 -g -std=c++17 -fopenmp -fsanitize=address,undefined -fno-omit-frame-pointer tests/test_core.cpp -o test_core_san
+./test_core_san
+PASS: analytic geometry, empty scene, BVH vs brute force 52000 rays
+/opt/homebrew/bin/g++-16 -Isrc -O1 -g -std=c++17 -fopenmp -fsanitize=address,undefined -fno-omit-frame-pointer src/main.cpp -o raytrace_san
+./raytrace_san --scene many --mode tile-dynamic --threads 4 --width 67 --height 39 --spp 4
+{"scene":"many","mode":"tile-dynamic","threads":4,"actual_threads":4,"width":67,"height":39,"spp":4,"depth":10,"tile":16,"chunk":1,"seed":451,"spheres":223,"triangles":0,"repeat":0,"loading_s":0.000155,"bvh_s":0.000348,"setup_s":0.000528,"render_s":0.007923,"setup_plus_render_s":0.008451,"png_s":0,"output_s":0,"end_to_end_s":0.00862,"diagnostic":false,"hash":"e47b974ebf93ef0c"}
+{"scene":"bunny","mode":"tile-dynamic","threads":4,"actual_threads":4,"width":67,"height":39,"spp":4,"depth":10,"tile":16,"chunk":1,"seed":451,"spheres":1,"triangles":69451,"repeat":0,"loading_s":0.163822,"bvh_s":0.24663,"setup_s":0.410484,"render_s":0.006807,"setup_plus_render_s":0.417291,"png_s":0.000336,"output_s":0.000337,"end_to_end_s":0.419641,"diagnostic":true,"hash":"e7fa7506495f74f"}

@@ -1,0 +1,4 @@
+./test_core
+PASS: analytic geometry, empty scene, BVH vs brute force 52000 rays
+python3 tests/run_correctness.py
+PASS: 131 exact float64 image comparisons; 6 invalid CLI cases; independent seeds

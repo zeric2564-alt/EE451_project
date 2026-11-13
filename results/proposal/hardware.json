@@ -1,0 +1,1 @@
+{"cpu":"Apple M3","physical_cores":8,"logical_cores":8,"memory_bytes":17179869184,"source":"sysctl -n machdep.cpu.brand_string hw.physicalcpu hw.logicalcpu hw.memsize","affinity":"OS-managed; macOS libgomp reports affinity unsupported","note":"Heterogeneous performance/efficiency cores; worker count does not imply equal-performance dedicated cores."}

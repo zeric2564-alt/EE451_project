@@ -1,0 +1,8 @@
+{
+  "source": "https://graphics.stanford.edu/pub/3Dscanrep/bunny.tar.gz",
+  "member": "bunny/reconstruction/bun_zipper.ply",
+  "vertices": 35947,
+  "triangles": 69451,
+  "archive_sha256": "a5720bd96d158df403d153381b8411a727a1d73cff2f33dc9b212d6f75455b84",
+  "obj_sha256": "4feb63e4ff899ac38b4ceb87e9f1caa3c8937b7c06cd1bec226a3f6fe1ce7e1f"
+}

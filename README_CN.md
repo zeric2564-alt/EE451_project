@@ -1,67 +1,36 @@
-# 项目使用说明
+# EE451 proposal 完整实现
 
-## 项目定位
+请以 [逐项验收清单](PROPOSAL_CHECKLIST.md) 和 [新实验报告](report/proposal/report.html) 为准。仓库原有报告只覆盖球体场景，保留为历史记录。
 
-**基于 OpenMP 的多核 CPU 光线追踪渲染器。** 推荐作为“开发完整应用并进行并行加速”方向，主要贡献是完整实现、并行任务组织、可复现采样和实验分析，不声称发明新的光线追踪算法。
+本次补齐：三角形求交、混合 BVH、全部 69,451 面的 Stanford Bunny、房间面积光源、不均匀反射/折射场景、原生 PNG、分阶段计时、固定 32×32 区域计数、工作量热图、线程负载不平衡分析、要求的实验配置和本地网页演示。
 
-程序输入为内置场景与渲染参数，输出为真实计算得到的图片。已实现串行、按行静态/动态、按块静态/动态五个版本。所有版本共用 BVH、几何求交、材质和采样代码，因此比较不会通过降低图片质量或削弱串行基线放大加速。
-
-## 先看哪些文件
-
-1. `report/results.html`：完整实测报告，可直接用浏览器打开，无需网络。
-2. `images/render_gallery.png`：程序实际输出的图片。
-3. `results/summary.csv`：运行时间、加速比、效率的汇总。
-4. `results/raw.csv`：全部主实验原始数据；`sweep.csv` 为参数实验，`cold.csv` 为完整进程计时。
-5. `src/core.hpp`、`src/main.cpp`：核心算法与并行执行代码。
-
-## 编译运行
-
-需要支持 OpenMP 的 C++17 编译器、Make 和 Python 3。当前测试平台是 Linux + GCC；Windows 建议在 WSL 中使用同一套命令。程序本身不依赖 Python 图像库。
-
-```bash
+```sh
 make -j2
 make test
-./raytrace --scene many --mode tile-dynamic --threads 4 --width 640 --height 360 --spp 64 --output render.ppm
+./raytrace --scene bunny --mode tile-dynamic --threads 8 --width 512 --height 512 --spp 32 --output bunny.png
+python3 web/server.py
 ```
 
-`--threads` 是线程数；`--spp` 是每像素采样数，越高通常噪声越少但计算越久；`--depth` 是最大路径深度。`--tile 16` 表示每个图像块最多为 16×16 像素。
+浏览器打开 `http://127.0.0.1:8000`，选择场景、调度方式、线程、分辨率和采样量，提交后查看 PNG 和实际耗时。
 
-若安装了 Pillow，可以把 PPM 转成 PNG：
+- [最终报告](report/proposal/report.html)：独立 HTML，包含全部图表和数据解释。
+- [答辩演示稿](report/proposal/presentation.html)：离线 HTML 幻灯片，左右方向键翻页。
+- `results/proposal/`：本机原始 CSV、硬件记录、正确性证据、图片与分析汇总。
+- `assets/`：官方 Bunny 转换后的 OBJ、来源说明和校验值。
 
-```bash
-python3 -c "from PIL import Image; Image.open('render.ppm').save('render.png')"
+分析依赖和完整复现：
+
+```sh
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+.venv/bin/python tests/test_proposal.py
+.venv/bin/python tests/test_web.py
+python3 benchmarks/proposal.py --stage all
+.venv/bin/python benchmarks/report_proposal.py
 ```
 
-## 重跑实验
+实验支持断点续跑；已有结果会跳过，二进制变化会拒绝混入旧数据。重新测量前先归档 `results/proposal/` 并重新记录硬件，详见英文 README。
 
-```bash
-python3 -m pip install -r requirements.txt
-python3 benchmarks/run_benchmarks.py --width 400 --height 225 --spp 24 --repeats 5
-python3 benchmarks/run_benchmarks.py --width 400 --height 225 --spp 24 --repeats 5 --sweep --output results/sweep.csv
-python3 benchmarks/run_extra.py
-python3 benchmarks/analyze.py
-```
+主实验 255 次、tile 实验 120 次、选定高质量配置 50 次、无预热端到端实验 30 次，另有 16 次诊断。主实验为 512×512、32 spp；选定配置覆盖 1024×1024 和 64/128 spp。所有计时配置均有五次测量；主计时不启用昂贵计数器。
 
-主脚本默认测 1、2、4、8 线程。机器不足8个可用CPU时，增加 `--threads 1 2 4` 等选项；额外实验脚本使用 `--threads 4`。重跑会覆盖对应结果文件，若想保留原结果，先复制整个项目目录。
-
-## 如何解释结果
-
-- **正确性：**同一可执行文件内，各版本使用与线程无关的随机序列；逐像素比较原始双精度数值，而非只看图片相似。
-- **核心耗时：**包括计算、线程启动、调度和同步，不包括场景准备、图像哈希或输出文件。
-- **准备＋计算：**额外加上场景/BVH构建和图像内存分配，仍不等于完整进程时间。
-- **完整进程耗时：**`cold.csv` 单独测量，不做预热，包含进程启动、准备、一次渲染、校验哈希及图片输出；并不保证硬件缓存完全冷。
-- **加速比：**串行耗时中位数除以并行耗时中位数。每种配置至少5次，报告中位数及最小/最大值，不把单次最好成绩当结论。
-- **自己的贡献：**并行应用实现与实验分析。使用 OpenMP 和图像分块本身是已有技术；不能把它们写成全球首次提出的新算法。
-
-本次结果来自一台虚拟化运行环境，源码和脚本可复现，但在你自己的电脑上获得的时间和加速比可能不同。正式提交前应在小组可用机器上至少编译、通过测试并完成一轮实验，确保你们能够运行和解释它。
-
-## 代码阅读顺序与三人分工
-
-1. `core.hpp`：向量/光线 → 球体求交 → BVH → 场景 → 材质与路径追踪 → 像素采样。
-2. `main.cpp`：参数解析 → 行/块任务映射 → OpenMP循环 → 计时与图像输出。
-3. `tests/`：解析几何和独立遍历对照、不同调度的逐字节图像比较。
-4. `benchmarks/`：随机化实验顺序、收集JSON/CSV、绘图与生成报告。
-
-可分为渲染与正确性、并行与调度、实验与分析三部分，各成员都应能讲清楚为什么同一像素不会被多个线程同时写入，以及随机采样如何避免随线程数改变。
-
-代码与实验自动化由AI辅助完成。正式使用时按课程要求说明辅助工具使用情况，并由小组理解和复核。更详细的实现边界、测试限制和参考文献见英文 README。
+本机为 Apple M3、8 核、16 GiB。不同性能核心和系统调度影响扩展性；这里的加速比不代表专业渲染器对比。面积光源采用随机路径采样，有限深度、低 spp 噪声和平面三角形法线属于已记录限制。历史日期里程碑只做交付物映射，不声称已发生课程提交。

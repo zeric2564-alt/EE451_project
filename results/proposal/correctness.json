@@ -1,0 +1,1037 @@
+{
+  "passed": true,
+  "parallel_image_comparisons": 131,
+  "invalid_cli_cases": 6,
+  "checked_threads": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "records": [
+    {
+      "scene": "room",
+      "mode": "row-static",
+      "threads": 1,
+      "tile": 16,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "row-static",
+      "threads": 2,
+      "tile": 16,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "row-static",
+      "threads": 4,
+      "tile": 16,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "row-static",
+      "threads": 8,
+      "tile": 16,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "row-dynamic",
+      "threads": 1,
+      "tile": 16,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "row-dynamic",
+      "threads": 2,
+      "tile": 16,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "row-dynamic",
+      "threads": 4,
+      "tile": 16,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "row-dynamic",
+      "threads": 8,
+      "tile": 16,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "tile-static",
+      "threads": 1,
+      "tile": 1,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "tile-static",
+      "threads": 1,
+      "tile": 16,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "tile-static",
+      "threads": 1,
+      "tile": 128,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "tile-static",
+      "threads": 2,
+      "tile": 1,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "tile-static",
+      "threads": 2,
+      "tile": 16,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "tile-static",
+      "threads": 2,
+      "tile": 128,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "tile-static",
+      "threads": 4,
+      "tile": 1,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "tile-static",
+      "threads": 4,
+      "tile": 16,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "tile-static",
+      "threads": 4,
+      "tile": 128,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "tile-static",
+      "threads": 8,
+      "tile": 1,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "tile-static",
+      "threads": 8,
+      "tile": 16,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "tile-static",
+      "threads": 8,
+      "tile": 128,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "tile-dynamic",
+      "threads": 1,
+      "tile": 1,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "tile-dynamic",
+      "threads": 1,
+      "tile": 16,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "tile-dynamic",
+      "threads": 1,
+      "tile": 128,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "tile-dynamic",
+      "threads": 2,
+      "tile": 1,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "tile-dynamic",
+      "threads": 2,
+      "tile": 16,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "tile-dynamic",
+      "threads": 2,
+      "tile": 128,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "tile-dynamic",
+      "threads": 4,
+      "tile": 1,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "tile-dynamic",
+      "threads": 4,
+      "tile": 16,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "tile-dynamic",
+      "threads": 4,
+      "tile": 128,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "tile-dynamic",
+      "threads": 8,
+      "tile": 1,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "tile-dynamic",
+      "threads": 8,
+      "tile": 16,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "room",
+      "mode": "tile-dynamic",
+      "threads": 8,
+      "tile": 128,
+      "hash": "a46999e89839c349",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "row-static",
+      "threads": 1,
+      "tile": 16,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "row-static",
+      "threads": 2,
+      "tile": 16,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "row-static",
+      "threads": 4,
+      "tile": 16,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "row-static",
+      "threads": 8,
+      "tile": 16,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "row-dynamic",
+      "threads": 1,
+      "tile": 16,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "row-dynamic",
+      "threads": 2,
+      "tile": 16,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "row-dynamic",
+      "threads": 4,
+      "tile": 16,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "row-dynamic",
+      "threads": 8,
+      "tile": 16,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "tile-static",
+      "threads": 1,
+      "tile": 1,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "tile-static",
+      "threads": 1,
+      "tile": 16,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "tile-static",
+      "threads": 1,
+      "tile": 128,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "tile-static",
+      "threads": 2,
+      "tile": 1,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "tile-static",
+      "threads": 2,
+      "tile": 16,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "tile-static",
+      "threads": 2,
+      "tile": 128,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "tile-static",
+      "threads": 4,
+      "tile": 1,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "tile-static",
+      "threads": 4,
+      "tile": 16,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "tile-static",
+      "threads": 4,
+      "tile": 128,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "tile-static",
+      "threads": 8,
+      "tile": 1,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "tile-static",
+      "threads": 8,
+      "tile": 16,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "tile-static",
+      "threads": 8,
+      "tile": 128,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "tile-dynamic",
+      "threads": 1,
+      "tile": 1,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "tile-dynamic",
+      "threads": 1,
+      "tile": 16,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "tile-dynamic",
+      "threads": 1,
+      "tile": 128,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "tile-dynamic",
+      "threads": 2,
+      "tile": 1,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "tile-dynamic",
+      "threads": 2,
+      "tile": 16,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "tile-dynamic",
+      "threads": 2,
+      "tile": 128,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "tile-dynamic",
+      "threads": 4,
+      "tile": 1,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "tile-dynamic",
+      "threads": 4,
+      "tile": 16,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "tile-dynamic",
+      "threads": 4,
+      "tile": 128,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "tile-dynamic",
+      "threads": 8,
+      "tile": 1,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "tile-dynamic",
+      "threads": 8,
+      "tile": 16,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "uneven",
+      "mode": "tile-dynamic",
+      "threads": 8,
+      "tile": 128,
+      "hash": "88649d846c01214a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "row-static",
+      "threads": 1,
+      "tile": 16,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "row-static",
+      "threads": 2,
+      "tile": 16,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "row-static",
+      "threads": 4,
+      "tile": 16,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "row-static",
+      "threads": 8,
+      "tile": 16,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "row-dynamic",
+      "threads": 1,
+      "tile": 16,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "row-dynamic",
+      "threads": 2,
+      "tile": 16,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "row-dynamic",
+      "threads": 4,
+      "tile": 16,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "row-dynamic",
+      "threads": 8,
+      "tile": 16,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "tile-static",
+      "threads": 1,
+      "tile": 1,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "tile-static",
+      "threads": 1,
+      "tile": 16,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "tile-static",
+      "threads": 1,
+      "tile": 128,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "tile-static",
+      "threads": 2,
+      "tile": 1,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "tile-static",
+      "threads": 2,
+      "tile": 16,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "tile-static",
+      "threads": 2,
+      "tile": 128,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "tile-static",
+      "threads": 4,
+      "tile": 1,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "tile-static",
+      "threads": 4,
+      "tile": 16,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "tile-static",
+      "threads": 4,
+      "tile": 128,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "tile-static",
+      "threads": 8,
+      "tile": 1,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "tile-static",
+      "threads": 8,
+      "tile": 16,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "tile-static",
+      "threads": 8,
+      "tile": 128,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "tile-dynamic",
+      "threads": 1,
+      "tile": 1,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "tile-dynamic",
+      "threads": 1,
+      "tile": 16,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "tile-dynamic",
+      "threads": 1,
+      "tile": 128,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "tile-dynamic",
+      "threads": 2,
+      "tile": 1,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "tile-dynamic",
+      "threads": 2,
+      "tile": 16,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "tile-dynamic",
+      "threads": 2,
+      "tile": 128,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "tile-dynamic",
+      "threads": 4,
+      "tile": 1,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "tile-dynamic",
+      "threads": 4,
+      "tile": 16,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "tile-dynamic",
+      "threads": 4,
+      "tile": 128,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "tile-dynamic",
+      "threads": 8,
+      "tile": 1,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "tile-dynamic",
+      "threads": 8,
+      "tile": 16,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny",
+      "mode": "tile-dynamic",
+      "threads": 8,
+      "tile": 128,
+      "hash": "4f4e1cbf738cef62",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "row-static",
+      "threads": 1,
+      "tile": 16,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "row-static",
+      "threads": 2,
+      "tile": 16,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "row-static",
+      "threads": 4,
+      "tile": 16,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "row-static",
+      "threads": 8,
+      "tile": 16,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "row-dynamic",
+      "threads": 1,
+      "tile": 16,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "row-dynamic",
+      "threads": 2,
+      "tile": 16,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "row-dynamic",
+      "threads": 4,
+      "tile": 16,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "row-dynamic",
+      "threads": 8,
+      "tile": 16,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "tile-static",
+      "threads": 1,
+      "tile": 1,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "tile-static",
+      "threads": 1,
+      "tile": 16,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "tile-static",
+      "threads": 1,
+      "tile": 128,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "tile-static",
+      "threads": 2,
+      "tile": 1,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "tile-static",
+      "threads": 2,
+      "tile": 16,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "tile-static",
+      "threads": 2,
+      "tile": 128,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "tile-static",
+      "threads": 4,
+      "tile": 1,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "tile-static",
+      "threads": 4,
+      "tile": 16,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "tile-static",
+      "threads": 4,
+      "tile": 128,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "tile-static",
+      "threads": 8,
+      "tile": 1,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "tile-static",
+      "threads": 8,
+      "tile": 16,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "tile-static",
+      "threads": 8,
+      "tile": 128,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "tile-dynamic",
+      "threads": 1,
+      "tile": 1,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "tile-dynamic",
+      "threads": 1,
+      "tile": 16,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "tile-dynamic",
+      "threads": 1,
+      "tile": 128,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "tile-dynamic",
+      "threads": 2,
+      "tile": 1,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "tile-dynamic",
+      "threads": 2,
+      "tile": 16,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "tile-dynamic",
+      "threads": 2,
+      "tile": 128,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "tile-dynamic",
+      "threads": 4,
+      "tile": 1,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "tile-dynamic",
+      "threads": 4,
+      "tile": 16,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "tile-dynamic",
+      "threads": 4,
+      "tile": 128,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "tile-dynamic",
+      "threads": 8,
+      "tile": 1,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "tile-dynamic",
+      "threads": 8,
+      "tile": 16,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    },
+    {
+      "scene": "bunny-mixed",
+      "mode": "tile-dynamic",
+      "threads": 8,
+      "tile": 128,
+      "hash": "f56b6ac33329dd3a",
+      "exact_float64_match": true
+    }
+  ]
+}

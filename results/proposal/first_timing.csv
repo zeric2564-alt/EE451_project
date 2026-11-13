@@ -1,0 +1,2 @@
+scene,mode,threads,actual_threads,width,height,spp,depth,tile,chunk,seed,repeat,triangles,loading_s,bvh_s,render_s,png_s,output_s,end_to_end_s,hash
+bunny,tile-dynamic,8,8,512,512,32,10,16,1,451,0,69451,0.067277,0.027909,0.621913,0.010306,0.010308,0.734838,d56ee737fa10f7c6
