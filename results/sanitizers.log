@@ -1,0 +1,7 @@
+g++ -Isrc -O1 -g -std=c++17 -fopenmp -fsanitize=address,undefined -fno-omit-frame-pointer tests/test_core.cpp -o test_core_san
+./test_core_san
+PASS: analytic geometry, empty scene, BVH vs brute force 30000 rays
+g++ -Isrc -O1 -g -std=c++17 -fopenmp -fsanitize=address,undefined -fno-omit-frame-pointer src/main.cpp -o raytrace_san
+./raytrace_san --scene many --mode tile-dynamic --threads 4 --width 67 --height 39 --spp 4
+{"scene":"many","mode":"tile-dynamic","threads":4,"actual_threads":4,"width":67,"height":39,"spp":4,"depth":10,"tile":16,"chunk":1,"seed":451,"spheres":223,"repeat":0,"setup_s":0.001517526,"render_s":0.03991347,"setup_plus_render_s":0.041430996,"diagnostic":false,"hash":"3606f95ba92ccacd"}
+output_s=7.2322e-05 process_s=0.042053356

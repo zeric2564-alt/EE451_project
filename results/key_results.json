@@ -1,0 +1,35 @@
+{
+  "main_measured_runs": 255,
+  "sweep_measured_runs": 150,
+  "cold_measured_runs": 30,
+  "threads": 8,
+  "tile_dynamic_speedups": {
+    "simple": 5.016780768547857,
+    "many": 4.964261962823968,
+    "clustered": 4.949325084330244
+  },
+  "cold": [
+    {
+      "scene": "simple",
+      "serial_process_s": 0.3124472190002052,
+      "parallel_process_s": 0.06809025099937571,
+      "speedup": 4.5887217981186454,
+      "runs": 5
+    },
+    {
+      "scene": "many",
+      "serial_process_s": 1.8568533929992554,
+      "parallel_process_s": 0.38195380799970735,
+      "speedup": 4.861460611490168,
+      "runs": 5
+    },
+    {
+      "scene": "clustered",
+      "serial_process_s": 1.2407455970005685,
+      "parallel_process_s": 0.2558097559995076,
+      "speedup": 4.850266918682166,
+      "runs": 5
+    }
+  ],
+  "correctness_comparisons": 99
+}
