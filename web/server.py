@@ -11,15 +11,16 @@ lock=threading.Lock()
 jobs={}
 MODES={'serial','row-static','row-dynamic','tile-static','tile-dynamic'}
 SCENES={'room','uneven','bunny','bunny-mixed'}
+MAX_WORKERS=min(8,len(os.sched_getaffinity(0)) if hasattr(os,'sched_getaffinity') else (os.cpu_count() or 1))
 
 def validate(data):
     if not isinstance(data,dict):raise ValueError('Expected an object')
     allowed={'scene','mode','width','spp','threads','tile'}
     if set(data)-allowed:raise ValueError('Unknown setting')
-    result={'scene':'bunny','mode':'tile-dynamic','width':512,'spp':32,'threads':min(8,os.cpu_count() or 1),'tile':16}
+    result={'scene':'bunny','mode':'tile-dynamic','width':512,'spp':32,'threads':MAX_WORKERS,'tile':16}
     result.update(data)
     if result['scene'] not in SCENES or result['mode'] not in MODES:raise ValueError('Unknown scene or mode')
-    for k,values in [('width',{256,512,1024}),('spp',{8,32,64,128}),('threads',set(range(1,min(8,os.cpu_count() or 1)+1))),('tile',{8,16,32,64})]:
+    for k,values in [('width',{256,512,1024}),('spp',{8,32,64,128}),('threads',set(range(1,MAX_WORKERS+1))),('tile',{8,16,32,64})]:
         if type(result[k]) is not int or result[k] not in values:raise ValueError('Invalid '+k)
     return result
 
@@ -32,6 +33,8 @@ def render(job_id,settings):
         p=subprocess.run(cmd,cwd=ROOT,capture_output=True,text=True,timeout=300,check=True)
         result=json.loads(p.stdout);result['process_wall_s']=time.monotonic()-before
         with lock:jobs[job_id].update(status='done',result=result,image='/jobs/'+job_id+'.png')
+    except subprocess.CalledProcessError as exc:
+        with lock:jobs[job_id].update(status='error',error=(exc.stderr or str(exc)).strip()[:2000])
     except Exception as exc:
         with lock:jobs[job_id].update(status='error',error=str(exc))
 
@@ -44,6 +47,7 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if not self.local():return self.send(403,{'error':'Local host required'})
         path=urlparse(self.path).path
+        if path=='/api/config':return self.send(200,{'workers':[n for n in [1,2,4,8] if n<=MAX_WORKERS],'scenes':sorted(SCENES)})
         if path=='/':return self.send(200,(ROOT/'web/index.html').read_bytes(),'text/html; charset=utf-8')
         if path.startswith('/api/jobs/'):
             with lock:job=jobs.get(path.removeprefix('/api/jobs/'));payload=dict(job) if job else None

@@ -1,0 +1,6 @@
+clang++ -Isrc -O3 -std=c++17 -Wall -Wextra -Wpedantic -Xpreprocessor -fopenmp -I/Users/zhaoqianxiti/Documents/Codex/2026-11-13/https-github-com-zeric2564-alt-ee451/work/toolchain/libomp/23.1.5/include src/main.cpp -o raytrace -L/Users/zhaoqianxiti/Documents/Codex/2026-11-13/https-github-com-zeric2564-alt-ee451/work/toolchain/libomp/23.1.5/lib -Wl,-rpath,/Users/zhaoqianxiti/Documents/Codex/2026-11-13/https-github-com-zeric2564-alt-ee451/work/toolchain/libomp/23.1.5/lib -lomp
+python3 scripts/build_info.py --compiler 'clang++' --flags '-Isrc -O3 -std=c++17 -Wall -Wextra -Wpedantic -Xpreprocessor -fopenmp -I/Users/zhaoqianxiti/Documents/Codex/2026-11-13/https-github-com-zeric2564-alt-ee451/work/toolchain/libomp/23.1.5/include -L/Users/zhaoqianxiti/Documents/Codex/2026-11-13/https-github-com-zeric2564-alt-ee451/work/toolchain/libomp/23.1.5/lib -Wl,-rpath,/Users/zhaoqianxiti/Documents/Codex/2026-11-13/https-github-com-zeric2564-alt-ee451/work/toolchain/libomp/23.1.5/lib -lomp'
+./test_core
+PASS: analytic geometry, empty scene, BVH vs brute force 52000 rays
+python3 tests/run_correctness.py --output results/current/correctness.json
+PASS: 131 exact float64 image comparisons; 6 invalid CLI cases; independent seeds

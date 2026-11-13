@@ -1,0 +1,83 @@
+{
+  "requirements": "Repository EE451_Proposal.pdf",
+  "base_commit": "77af667af5c45b0a69178b3f88b67d2881491f57",
+  "build": {
+    "compiler": "clang++",
+    "compiler_version": "Apple clang version 17.0.0 (clang-1700.3.19.1)\nTarget: arm64-apple-darwin24.6.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin\n",
+    "flags": "-Isrc -O3 -std=c++17 -Wall -Wextra -Wpedantic -Xpreprocessor -fopenmp -I/Users/zhaoqianxiti/Documents/Codex/2026-11-13/https-github-com-zeric2564-alt-ee451/work/toolchain/libomp/23.1.5/include -L/Users/zhaoqianxiti/Documents/Codex/2026-11-13/https-github-com-zeric2564-alt-ee451/work/toolchain/libomp/23.1.5/lib -Wl,-rpath,/Users/zhaoqianxiti/Documents/Codex/2026-11-13/https-github-com-zeric2564-alt-ee451/work/toolchain/libomp/23.1.5/lib -lomp",
+    "binary_sha256": "11065807a9726f59b45695fb10dfbee2136ba98a9821c35736fd619ce73406f5"
+  },
+  "platform": "macOS-15.7.7-arm64-arm-64bit-Mach-O",
+  "geometry": {
+    "passed": true,
+    "bvh_linear_rays": 52000
+  },
+  "image_equivalence": {
+    "passed": true,
+    "comparisons": 131,
+    "evidence": "correctness.json"
+  },
+  "integration": {
+    "passed": true,
+    "render_tests": 3,
+    "metric_tests": 5,
+    "http_tests": 3,
+    "benchmark_tests": 5
+  },
+  "sanitizers": {
+    "address": true,
+    "undefined_behavior": true,
+    "coverage": "52,000-ray geometry suite and 4-worker Bunny render; ThreadSanitizer not run"
+  },
+  "pipeline": {
+    "preset": "smoke",
+    "measured_records": {
+      "main": 255,
+      "tiles": 120,
+      "quality": 50,
+      "cold": 30,
+      "diagnostics": 16
+    },
+    "total": 471,
+    "resume_without_duplicates": true,
+    "rejected_as_performance_report": true
+  },
+  "historical_data": {
+    "unchanged": true,
+    "source_hashes_match_base_commit": true,
+    "full_study_reanalysis_passed": true,
+    "new_full_performance_study_run": false
+  },
+  "artifacts": {
+    "report.html": {
+      "images_decoded": 10,
+      "slides": 0,
+      "bytes": 4421435
+    },
+    "presentation.html": {
+      "images_decoded": 8,
+      "slides": 10,
+      "bytes": 5077453
+    }
+  },
+  "browser": {
+    "completed": true,
+    "scene": "bunny",
+    "width": 512,
+    "height": 512,
+    "spp": 32,
+    "workers": 4,
+    "triangles": 69451,
+    "screenshot": "web-demo.png"
+  },
+  "ci": {
+    "workflow_added": true,
+    "remote_run": false
+  },
+  "reports": {
+    "full_reanalysis_passed": true,
+    "missing_thread_series_rejected": true,
+    "declared_subset_threads_passed": true,
+    "smoke_rejected": true
+  }
+}

@@ -25,12 +25,23 @@ python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 .venv/bin/python tests/test_proposal.py
 .venv/bin/python tests/test_web.py
-python3 benchmarks/proposal.py --stage all
-.venv/bin/python benchmarks/report_proposal.py
+python3 benchmarks/proposal.py --stage all --output results/current/experiment
+.venv/bin/python benchmarks/report_proposal.py --data results/current/experiment --output report/current
 ```
 
-实验支持断点续跑；已有结果会跳过，二进制变化会拒绝混入旧数据。重新测量前先归档 `results/proposal/` 并重新记录硬件，详见英文 README。
+实验默认写入独立目录，支持断点续跑，并校验二进制、源码、Bunny、编译器、机器、OpenMP 环境与实验参数。换机器或改配置时使用新的 `--output` 目录；原始 `results/proposal/` 保留。测试结果写入 `results/current/`。
 
 主实验 255 次、tile 实验 120 次、选定高质量配置 50 次、无预热端到端实验 30 次，另有 16 次诊断。主实验为 512×512、32 spp；选定配置覆盖 1024×1024 和 64/128 spp。所有计时配置均有五次测量；主计时不启用昂贵计数器。
 
-本机为 Apple M3、8 核、16 GiB。不同性能核心和系统调度影响扩展性；这里的加速比不代表专业渲染器对比。面积光源采用随机路径采样，有限深度、低 spp 噪声和平面三角形法线属于已记录限制。历史日期里程碑只做交付物映射，不声称已发生课程提交。
+仓库中原始实验的平台为 Apple M3、8 核、16 GiB。不同性能核心和系统调度影响扩展性；这里的加速比不代表专业渲染器对比。面积光源采用随机路径采样，有限深度、低 spp 噪声和平面三角形法线属于已记录限制。历史日期里程碑只做交付物映射，不声称已发生课程提交。
+
+本次以仓库内 `EE451_Proposal.pdf` 为唯一验收依据。Mac 可用 `brew install libomp` 配合 Apple Clang，也可安装 Homebrew GCC。构建后 `build-info.json` 记录实际编译器与选项。修改编译器/选项后用 `make -B` 重建。
+
+快速验证完整实验流程：
+
+```sh
+python3 benchmarks/proposal.py --stage all --preset smoke --output results/current/smoke
+make test-integration PYTHON=.venv/bin/python
+```
+
+`smoke` 使用低分辨率和低采样，仅验证流程；正式报告拒绝把它当性能研究。完整实验仍使用 proposal 中的 512/1024 分辨率、32/64/128 spp 与至少五次测量。详细修改与实测验证见 [CHANGES_CN.md](CHANGES_CN.md)。

@@ -9,3 +9,7 @@ __pycache__/
 assets/bunny.tar.gz
 /output/
 *.dSYM/
+/build-info.json
+
+# Runtime lock files are not experiment artifacts.
+.run.lock

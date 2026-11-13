@@ -1,0 +1,15 @@
+{
+  "main_runs": 135,
+  "tile_runs": 120,
+  "quality_runs": 50,
+  "cold_runs": 30,
+  "diagnostic_runs": 16,
+  "exact_image_comparisons": 131,
+  "tile_dynamic_speedup": {
+    "room": 5.175416835543877,
+    "uneven": 4.865358785525443,
+    "bunny": 4.927258092876329
+  },
+  "dynamic_slower_cases": 5,
+  "overlapping_range_cases": 6
+}

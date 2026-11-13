@@ -10,7 +10,7 @@ Implementation of **EE451_Proposal.pdf**, including the required 69,451-triangle
 
 ## Build and run
 
-C++17, OpenMP and Make are required. Linux: GCC with libgomp. macOS: Homebrew GCC (`brew install gcc` if missing); the Makefile selects a Homebrew `g++-*`, because Apple's `g++` is Clang without bundled OpenMP. Override with `make CXX=/path/to/compiler` when needed. Run commands from the repository root.
+C++17, OpenMP and Make are required. Linux: GCC with libgomp. macOS: either Homebrew GCC (`brew install gcc`) or Apple Clang plus LLVM OpenMP (`brew install libomp`). The Makefile selects Homebrew GCC when available, otherwise Clang and the Homebrew libomp prefix. For a custom OpenMP installation use `make OMP_PREFIX=/path/to/libomp`. Override the compiler with `make CXX=/path/to/compiler`. `build-info.json` records the actual compiler, flags and executable hash; use `make -B` after changing compiler/flags. Run commands from the repository root.
 
 ```sh
 make -j2
@@ -53,6 +53,7 @@ Modes: `serial`, `row-static`, `row-dynamic`, `tile-static`, `tile-dynamic`. Sta
 
 - `loading_s`: scene generation / OBJ parsing and normalization.
 - `bvh_s`: serial BVH construction; `setup_s` also includes image allocation.
+- `task_prepare_s`: per-render camera/task metadata, worker-stat/counter allocation and schedule setup, before the rendering timer.
 - `render_s`: pixel loop / OpenMP region, including launch and synchronization. Per-render camera metadata, counter allocation and post-render counter reduction are outside it.
 - `png_s`: RGB conversion, encoding and PNG write. `output_s` also covers any raw/PPM output.
 - `end_to_end_s`: cumulative in-program time since startup, including warmup and previous repeats if requested, but excluding final JSON/CSV printing and process launch/exit.
@@ -63,11 +64,22 @@ Modes: `serial`, `row-static`, `row-dynamic`, `tile-static`, `tile-dynamic`. Sta
 ## Reproduce the study
 
 ```sh
-python3 benchmarks/proposal.py --stage all
-.venv/bin/python benchmarks/report_proposal.py
+python3 benchmarks/proposal.py --stage all --output results/current/experiment
+.venv/bin/python benchmarks/report_proposal.py \
+  --data results/current/experiment --output report/current
 ```
 
-The runner is resumable and skips already-recorded configuration/round keys. It refuses to append after the executable hash changes. To perform a fresh reproduction, first move `results/proposal` to a named archive, recreate that directory, and record your hardware in `hardware.json`; do not mix machines or binaries in one dataset. Metadata records the actual compiler/runtime, environment and hashes. The report supplied here represents the recorded Apple M3 run. Its default full-study validation expects 1/2/4/8 workers and the documented configuration counts; adapt analysis if intentionally running a reduced study on smaller hardware.
+The runner defaults to a fresh `results/current/experiment` directory, leaving the retained `results/proposal` study intact. It selects supported 1/2/4/8 worker counts from available hardware. You can set `--threads 1 2 4` and `--repeats 7`; reporting adapts to those counts. At least five repetitions remain mandatory.
+
+Resume with the same command. Binary, source, Bunny, runner, host, compiler/runtime, OpenMP environment, worker and repetition settings are recorded in `run.metadata.json`. Changed inputs or duplicate/incomplete CSV records cause an explicit error instead of mixing measurements. A directory lock prevents simultaneous writers. Use a new `--output` directory for a changed experiment. Hardware queries that the OS blocks are recorded as unavailable, never replaced with a guessed CPU model.
+
+For a short end-to-end pipeline check (same stage coverage, reduced resolution/spp):
+
+```sh
+python3 benchmarks/proposal.py --stage all --preset smoke --output results/current/smoke
+```
+
+Smoke data are **verification only**; the final-report generator rejects them. The retained M3 data can be reanalyzed with `--data results/proposal --output report/reproduced`. Report hardware/compiler descriptions come from the selected dataset, not this computer. Full new reports can optionally read `correctness.json` and `validation.json` from their data directory; missing separate validation is disclosed.
 
 Stages run **sequentially**, never concurrent timing workloads:
 
@@ -85,10 +97,16 @@ Native M3 results are affected by heterogeneous cores, OS-managed affinity and d
 
 ## Verification and historical results
 
-`make test` runs analytic geometry, 52,000 BVH/linear comparisons and exact raw-image comparisons. `tests/test_proposal.py` checks schedule-independent region counts, PNG decoding/PPM equivalence, timing CSV and malformed meshes. `tests/test_web.py` checks the real HTTP job lifecycle and input rejection. Actual outcomes are retained in `results/proposal/validation.json` and logs.
+`make test` runs analytic geometry, 52,000 BVH/linear comparisons and exact raw-image comparisons. `tests/test_proposal.py` checks schedule-independent region counts, PNG decoding/PPM equivalence, timing CSV and malformed meshes. `tests/test_web.py` checks the real HTTP job lifecycle, input rejection, available workers and contention prevention. `tests/test_benchmarks.py` checks required workload coverage and resume integrity. The original study outcomes are retained in `results/proposal/validation.json`. Fresh checks write to `results/current/`, including `correctness.json`, so rerunning tests does not overwrite the historical evidence.
 
 `make sanitize` requests AddressSanitizer/UBSan where the selected compiler supports them. Do not reuse the old Linux sanitizer log as proof about the new code or your platform.
 
 The original `results/*.csv`, `report/results.html`, `images/` and old benchmark scripts concern the earlier sphere-only experiment. They are preserved for provenance and are **not the final proposal results**. Original README content is archived under `report/legacy_README*.md`. The old SHA256SUMS file is likewise historical; `scripts/package.py` produces a new checked handoff archive.
 
 AI assistance was used for implementation and automation. Team members should understand and review the code and follow course attribution requirements. See the final report and assets README for references and dataset terms.
+
+## Changes and validation for this checkout
+
+The authoritative requirements are **the repository's `EE451_Proposal.pdf`**: room, uneven-material spheres, full Stanford Bunny, five execution modes, four tile sizes and independent 32×32 spatial diagnostics. Additional public assets and a richer web interface remain optional.
+
+This update adds Clang/libomp builds, actual build provenance, isolated and resumable experiments, configurable report input/output, hardware-aware web worker choices and stage timings. See [current validation](results/current/validation.json) and [change notes](CHANGES_CN.md). The retained original experiment data still describe their recorded M3/GCC binary; the updated binary has separately recorded correctness and pipeline validation.

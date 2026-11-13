@@ -12,13 +12,14 @@
 <label for="spp">Samples per pixel</label><select id="spp"><option>8</option><option selected>32</option><option>64</option><option>128</option></select>
 <label for="threads">Workers</label><select id="threads"><option>1</option><option>2</option><option selected>4</option><option>8</option></select>
 <label for="tile">Tile side (pixels)</label><select id="tile"><option>8</option><option selected>16</option><option>32</option><option>64</option></select>
-<button id="submit">Render image ↗</button></form><p id="status" role="status" aria-live="polite">Ready. Choose a scene to start.</p><small>Fixed seed 451 · Maximum path depth 10</small></section>
+<button id="submit" disabled>Render image ↗</button></form><p id="status" role="status" aria-live="polite">Ready. Choose a scene to start.</p><small>Fixed seed 451 · Maximum path depth 10</small></section>
 <section class="panel"><div class="preview"><div id="empty" class="empty"><b>◈</b>Your next frame starts here.<br>Render a scene to inspect its image and timing.</div><img id="image" alt="Rendered scene" hidden></div>
-<div class="stats"><div class="stat"><small>Render time</small><strong id="render">—</strong></div><div class="stat"><small>Local process time</small><strong id="total">—</strong></div><div class="stat"><small>Actual workers</small><strong id="actual">—</strong></div></div>
+<div class="stats"><div class="stat"><small>Render time</small><strong id="render">—</strong></div><div class="stat"><small>Local process time</small><strong id="total">—</strong></div><div class="stat"><small>Actual workers</small><strong id="actual">—</strong></div><div class="stat"><small>Scene loading</small><strong id="loading">—</strong></div><div class="stat"><small>BVH construction</small><strong id="bvh">—</strong></div><div class="stat"><small>PNG output</small><strong id="png">—</strong></div></div>
 <div class="caption"><span id="details" class="muted">Image output and setup are outside render time.</span><a id="download" hidden download="render.png">Download PNG</a></div></section></div>
 <footer>Stanford Bunny data: Stanford Computer Graphics Laboratory. Demo timings are individual observations; use the experiment scripts for controlled comparisons.</footer></main>
 <script>
 const $=id=>document.getElementById(id);
+(async()=>{try{const response=await fetch('/api/config');if(!response.ok)throw Error('Cannot read available workers');const config=await response.json();$('threads').replaceChildren(...config.workers.map(n=>new Option(String(n),String(n))));$('threads').value=String(config.workers.filter(n=>n<=4).at(-1));$('submit').disabled=false;}catch(error){$('status').textContent=error.message;}})();
 $('mode').onchange=()=>{$('threads').disabled=$('mode').value==='serial';$('tile').disabled=!$('mode').value.startsWith('tile');};
 $('form').onsubmit=async event=>{event.preventDefault();$('submit').disabled=true;$('status').textContent='Rendering on your CPU…';
 try{const settings={};for(const k of ['scene','mode','width','spp','threads','tile'])settings[k]=['scene','mode'].includes(k)?$(k).value:Number($(k).value);
@@ -26,6 +27,6 @@ if(settings.mode==='serial')settings.threads=1;
 const response=await fetch('/api/jobs',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(settings)});const job=await response.json();if(!response.ok)throw Error(job.error);
 let result;for(;;){await new Promise(resolve=>setTimeout(resolve,500));const r=await fetch('/api/jobs/'+job.id);if(!r.ok)throw Error('Cannot read job status');result=await r.json();if(result.status!=='running')break;}
 if(result.status==='error')throw Error(result.error);const r=result.result;$('image').src=result.image;$('image').hidden=false;$('empty').hidden=true;$('download').href=result.image;$('download').hidden=false;
-$('render').textContent=r.render_s.toFixed(3)+' s';$('total').textContent=r.process_wall_s.toFixed(3)+' s';$('actual').textContent=r.actual_threads;$('details').textContent=r.triangles.toLocaleString()+' triangles · '+r.spheres+' spheres';$('status').textContent='Complete · '+settings.scene+' / '+settings.mode;
+$('render').textContent=r.render_s.toFixed(3)+' s';$('total').textContent=r.process_wall_s.toFixed(3)+' s';$('actual').textContent=r.actual_threads;for(const k of ['loading','bvh','png'])$(k).textContent=r[k+'_s'].toFixed(3)+' s';$('details').textContent=r.triangles.toLocaleString()+' triangles · '+r.spheres+' spheres';$('status').textContent='Complete · '+settings.scene+' / '+settings.mode;
 }catch(error){$('status').textContent='Render failed: '+error.message;}finally{$('submit').disabled=false;}};
 </script></html>

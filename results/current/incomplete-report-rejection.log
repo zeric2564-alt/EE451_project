@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/Users/zhaoqianxiti/Documents/Codex/2026-11-13/https-github-com-zeric2564-alt-ee451/outputs/EE451_project/benchmarks/report_proposal.py", line 42, in <module>
+    if len(done)!=len(planned):raise ValueError('Incomplete '+stage+' experiment set')
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Incomplete main experiment set

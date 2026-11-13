@@ -11,7 +11,7 @@ import math
 
 ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser()
-parser.add_argument('--output', default='results/proposal/correctness.json')
+parser.add_argument('--output', default='results/current/correctness.json')
 options = parser.parse_args()
 env = dict(os.environ, OMP_DYNAMIC="FALSE", OMP_PROC_BIND="close", OMP_PLACES="cores")
 if os.uname().sysname == "Darwin":

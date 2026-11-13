@@ -1,0 +1,2 @@
+usage: report_proposal.py [-h] [--data DATA] [--output OUTPUT]
+report_proposal.py: error: Smoke runs validate the pipeline; they are not a full proposal performance study.

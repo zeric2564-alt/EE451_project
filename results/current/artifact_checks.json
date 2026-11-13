@@ -1,0 +1,12 @@
+{
+  "report.html": {
+    "images_decoded": 10,
+    "slides": 0,
+    "bytes": 4421435
+  },
+  "presentation.html": {
+    "images_decoded": 8,
+    "slides": 10,
+    "bytes": 5077453
+  }
+}

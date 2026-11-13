@@ -2,9 +2,10 @@
 from pathlib import Path
 from html.parser import HTMLParser
 from io import BytesIO
-import base64, json
+import argparse, base64, json
 from PIL import Image
 ROOT=Path(__file__).resolve().parents[1]
+p=argparse.ArgumentParser();p.add_argument('--directory',type=Path,default=ROOT/'report/proposal');p.add_argument('--output',type=Path,default=ROOT/'results/current/artifact_checks.json');args=p.parse_args()
 class Inspector(HTMLParser):
     def __init__(self):super().__init__();self.images=0;self.sections=0;self.titles=0;self.scripts=[];self.in_script=False
     def handle_starttag(self,tag,attrs):
@@ -24,7 +25,7 @@ class Inspector(HTMLParser):
         if self.in_script:self.scripts.append(data)
 results={}
 for name in ['report.html','presentation.html']:
-    path=ROOT/'report/proposal'/name;parser=Inspector();text=path.read_text();parser.feed(text)
+    path=args.directory/name;parser=Inspector();text=path.read_text();parser.feed(text)
     assert parser.titles==1
     assert parser.images>=8
     if name=='presentation.html':assert parser.sections==10
@@ -33,4 +34,5 @@ for name in ['report.html','presentation.html']:
     for i,script in enumerate(parser.scripts):
         out=ROOT/'tmp'/f'{name}.{i}.js';out.parent.mkdir(exist_ok=True);out.write_text(script)
 print(json.dumps(results,indent=2))
-(ROOT/'results/proposal/artifact_checks.json').write_text(json.dumps(results,indent=2))
+args.output.parent.mkdir(parents=True,exist_ok=True)
+args.output.write_text(json.dumps(results,indent=2))

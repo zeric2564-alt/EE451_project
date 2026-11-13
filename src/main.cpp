@@ -41,8 +41,9 @@ Options parse(int argc,char** argv){
     return o;
 }
 struct alignas(64) Stat {uint64_t tasks=0,pixels=0;double active_s=0,finish_s=0;};
-struct RenderResult {double time;int actual;std::vector<Stat> stats;std::vector<rt::Counters> regions;};
+struct RenderResult {double time,preparation;int actual;std::vector<Stat> stats;std::vector<rt::Counters> regions;};
 RenderResult render(const rt::Scene& scene,const Options& o,std::vector<rt::Vec>& image){
+    auto preparation_start=Clock::now();
     rt::Camera camera(static_cast<double>(o.width)/o.height,scene.dark);
     bool diagnostic=!o.diagnostics.empty(),tiled=o.mode.rfind("tile",0)==0;
     int nx=(o.width+o.tile-1)/o.tile,ny=(o.height+o.tile-1)/o.tile;
@@ -62,6 +63,7 @@ RenderResult render(const rt::Scene& scene,const Options& o,std::vector<rt::Vec>
     bool dynamic=o.mode.find("dynamic")!=std::string::npos;
     // Static uses contiguous blocks by default; dynamic chunk counts rows/tiles.
     omp_set_schedule(dynamic?omp_sched_dynamic:omp_sched_static,dynamic?o.chunk:0);
+    double preparation=seconds(preparation_start);
     auto start=Clock::now();
     if(o.mode=="serial"){
         for(int t=0;t<tasks;++t)run(t,0);
@@ -85,7 +87,7 @@ RenderResult render(const rt::Scene& scene,const Options& o,std::vector<rt::Vec>
         regions[i].rays+=worker[i].rays;regions[i].path_depth+=worker[i].path_depth;
         regions[i].node_visits+=worker[i].node_visits;regions[i].triangle_tests+=worker[i].triangle_tests;
     }
-    return {elapsed,actual,std::move(stats),std::move(regions)};
+    return {elapsed,preparation,actual,std::move(stats),std::move(regions)};
 }
 uint64_t hash_image(const std::vector<rt::Vec>& image){
     uint64_t h=14695981039346656037ULL;
@@ -101,7 +103,7 @@ int main(int argc,char** argv){try{
     if(o.warmup)render(scene,o,image);
     std::ofstream timing;
     if(!o.timing.empty()){timing.open(o.timing);if(!timing)throw std::runtime_error("cannot open timing CSV");
-        timing<<"scene,mode,threads,actual_threads,width,height,spp,depth,tile,chunk,seed,repeat,triangles,loading_s,bvh_s,render_s,png_s,output_s,end_to_end_s,hash\n";}
+        timing<<"scene,mode,threads,actual_threads,width,height,spp,depth,tile,chunk,seed,repeat,triangles,loading_s,bvh_s,task_prepare_s,render_s,png_s,output_s,end_to_end_s,hash\n";}
     for(int repeat=0;repeat<o.repeats;++repeat){
         auto r=render(scene,o,image);uint64_t hash=hash_image(image);
         if(!o.diagnostics.empty()){
@@ -140,10 +142,10 @@ int main(int argc,char** argv){try{
     std::cout<<std::setprecision(10)<<"{\"scene\":\""<<o.scene<<"\",\"mode\":\""<<o.mode<<"\",\"threads\":"<<o.threads<<",\"actual_threads\":"<<r.actual
       <<",\"width\":"<<o.width<<",\"height\":"<<o.height<<",\"spp\":"<<o.spp<<",\"depth\":"<<o.depth<<",\"tile\":"<<o.tile<<",\"chunk\":"<<o.chunk
       <<",\"seed\":"<<o.seed<<",\"spheres\":"<<scene.spheres.size()<<",\"triangles\":"<<scene.triangles.size()<<",\"repeat\":"<<repeat
-      <<",\"loading_s\":"<<loading<<",\"bvh_s\":"<<bvh<<",\"setup_s\":"<<setup<<",\"render_s\":"<<r.time<<",\"setup_plus_render_s\":"<<setup+r.time
+      <<",\"loading_s\":"<<loading<<",\"bvh_s\":"<<bvh<<",\"setup_s\":"<<setup<<",\"task_prepare_s\":"<<r.preparation<<",\"render_s\":"<<r.time<<",\"setup_plus_render_s\":"<<setup+r.preparation+r.time
       <<",\"png_s\":"<<png_s<<",\"output_s\":"<<output_s<<",\"end_to_end_s\":"<<end_to_end
       <<",\"diagnostic\":"<<((o.diagnostics.empty()&&o.regions.empty())?"false":"true")<<",\"hash\":\""<<std::hex<<hash<<std::dec<<"\"}\n";
-    if(timing.is_open()){timing<<std::setprecision(10)<<o.scene<<','<<o.mode<<','<<o.threads<<','<<r.actual<<','<<o.width<<','<<o.height<<','<<o.spp<<','<<o.depth<<','<<o.tile<<','<<o.chunk<<','<<o.seed<<','<<repeat<<','<<scene.triangles.size()<<','<<loading<<','<<bvh<<','<<r.time<<','<<png_s<<','<<output_s<<','<<end_to_end<<','<<std::hex<<hash<<std::dec<<'\n';timing.flush();if(!timing)throw std::runtime_error("failed to write timings");}
+    if(timing.is_open()){timing<<std::setprecision(10)<<o.scene<<','<<o.mode<<','<<o.threads<<','<<r.actual<<','<<o.width<<','<<o.height<<','<<o.spp<<','<<o.depth<<','<<o.tile<<','<<o.chunk<<','<<o.seed<<','<<repeat<<','<<scene.triangles.size()<<','<<loading<<','<<bvh<<','<<r.preparation<<','<<r.time<<','<<png_s<<','<<output_s<<','<<end_to_end<<','<<std::hex<<hash<<std::dec<<'\n';timing.flush();if(!timing)throw std::runtime_error("failed to write timings");}
     }
 
     return 0;

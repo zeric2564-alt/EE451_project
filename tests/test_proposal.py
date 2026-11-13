@@ -38,6 +38,9 @@ class ProposalTests(unittest.TestCase):
             self.assertEqual(len(records),1)
             self.assertAlmostEqual(float(records[0]['render_s']),r['render_s'])
             self.assertGreater(r['png_s'],0)
+            self.assertGreaterEqual(r['task_prepare_s'],0)
+            self.assertEqual(float(records[0]['task_prepare_s']),r['task_prepare_s'])
+            self.assertAlmostEqual(r['setup_plus_render_s'],r['setup_s']+r['task_prepare_s']+r['render_s'],places=8)
             self.assertGreater(r['end_to_end_s'],r['render_s']+r['loading_s']+r['bvh_s'])
     def test_bad_mesh_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:

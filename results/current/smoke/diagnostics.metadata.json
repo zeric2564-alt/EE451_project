@@ -1,0 +1,11 @@
+{
+  "stage": "diagnostics",
+  "preset": "smoke",
+  "expected_rows": 16,
+  "warmup": true,
+  "timing_note": "Warmed process_wall_s includes two renders; use cold.csv for single-frame process latency.",
+  "run_metadata": "run.metadata.json",
+  "rows": 16,
+  "complete": true,
+  "completed_utc": "2026-11-13T21:17:14.170005+00:00"
+}

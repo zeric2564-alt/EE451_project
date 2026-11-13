@@ -1,0 +1,54 @@
+.venv/bin/python tests/test_proposal.py
+...
+----------------------------------------------------------------------
+Ran 3 tests in 0.597s
+
+OK
+.venv/bin/python tests/test_metrics.py
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.000s
+
+OK
+.venv/bin/python tests/test_web.py
+127.0.0.1 - - [13/Nov/2026 13:17:04] "POST /api/jobs HTTP/1.1" 202 -
+127.0.0.1 - - [13/Nov/2026 13:17:04] "POST /api/jobs HTTP/1.1" 409 -
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tempfile.py:484: ResourceWarning: Implicitly cleaning up <HTTPError 409: 'Conflict'>
+  _warnings.warn(self.warn_message, ResourceWarning)
+.127.0.0.1 - - [13/Nov/2026 13:17:04] "GET /api/config HTTP/1.1" 200 -
+127.0.0.1 - - [13/Nov/2026 13:17:04] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [13/Nov/2026 13:17:04] "POST /api/jobs HTTP/1.1" 400 -
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tempfile.py:484: ResourceWarning: Implicitly cleaning up <HTTPError 400: 'Bad Request'>
+  _warnings.warn(self.warn_message, ResourceWarning)
+127.0.0.1 - - [13/Nov/2026 13:17:04] "POST /api/jobs HTTP/1.1" 400 -
+127.0.0.1 - - [13/Nov/2026 13:17:04] "POST /api/jobs HTTP/1.1" 400 -
+127.0.0.1 - - [13/Nov/2026 13:17:04] "POST /api/jobs HTTP/1.1" 400 -
+127.0.0.1 - - [13/Nov/2026 13:17:04] "POST /api/jobs HTTP/1.1" 400 -
+127.0.0.1 - - [13/Nov/2026 13:17:04] "POST /api/jobs HTTP/1.1" 400 -
+127.0.0.1 - - [13/Nov/2026 13:17:04] "POST /api/jobs HTTP/1.1" 400 -
+127.0.0.1 - - [13/Nov/2026 13:17:04] "POST /api/jobs HTTP/1.1" 403 -
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tempfile.py:484: ResourceWarning: Implicitly cleaning up <HTTPError 403: 'Forbidden'>
+  _warnings.warn(self.warn_message, ResourceWarning)
+127.0.0.1 - - [13/Nov/2026 13:17:04] "GET / HTTP/1.1" 403 -
+127.0.0.1 - - [13/Nov/2026 13:17:04] "GET /jobs/../../README.md HTTP/1.1" 404 -
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tempfile.py:484: ResourceWarning: Implicitly cleaning up <HTTPError 404: 'Not Found'>
+  _warnings.warn(self.warn_message, ResourceWarning)
+127.0.0.1 - - [13/Nov/2026 13:17:04] "GET /api/jobs/missing HTTP/1.1" 404 -
+.127.0.0.1 - - [13/Nov/2026 13:17:04] "POST /api/jobs HTTP/1.1" 202 -
+127.0.0.1 - - [13/Nov/2026 13:17:04] "GET /api/jobs/2d11e03f0345d7bb677e35f0c4ca19ec HTTP/1.1" 200 -
+127.0.0.1 - - [13/Nov/2026 13:17:04] "GET /api/jobs/2d11e03f0345d7bb677e35f0c4ca19ec HTTP/1.1" 200 -
+127.0.0.1 - - [13/Nov/2026 13:17:04] "GET /api/jobs/2d11e03f0345d7bb677e35f0c4ca19ec HTTP/1.1" 200 -
+127.0.0.1 - - [13/Nov/2026 13:17:04] "GET /api/jobs/2d11e03f0345d7bb677e35f0c4ca19ec HTTP/1.1" 200 -
+127.0.0.1 - - [13/Nov/2026 13:17:04] "GET /api/jobs/2d11e03f0345d7bb677e35f0c4ca19ec HTTP/1.1" 200 -
+127.0.0.1 - - [13/Nov/2026 13:17:04] "GET /jobs/2d11e03f0345d7bb677e35f0c4ca19ec.png HTTP/1.1" 200 -
+.
+----------------------------------------------------------------------
+Ran 3 tests in 0.775s
+
+OK
+.venv/bin/python tests/test_benchmarks.py
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.002s
+
+OK

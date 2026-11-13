@@ -1,5 +1,6 @@
 """Exercise the actual HTTP/native-render boundary on an ephemeral loopback port."""
 import importlib.util, json, threading, time, unittest
+from unittest import mock
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 from pathlib import Path
@@ -18,8 +19,11 @@ class WebTests(unittest.TestCase):
         req=Request(self.base+path,data=data,headers={'Content-Type':'application/json',**(headers or {})})
         try:
             with urlopen(req,timeout=10) as r:return r.status,r.read()
-        except HTTPError as e:return e.code,e.read()
+        except HTTPError as e:
+            with e:return e.code,e.read()
     def test_page_and_rejections(self):
+        status,config=self.request('/api/config');self.assertEqual(status,200);self.assertIn(1,json.loads(config)['workers'])
+        self.assertTrue(all(n<=viewer.MAX_WORKERS for n in json.loads(config)['workers']))
         status,body=self.request('/');self.assertEqual(status,200);self.assertIn(b'CPU rendering lab',body)
         for data in [{'scene':'unknown'},{'width':1},{'threads':-1},{'tile':0},{'scene':['bunny']},{'output':'/tmp/unauthorized'},{'spp':True}]:
             self.assertEqual(self.request('/api/jobs',data)[0],400)
@@ -27,8 +31,26 @@ class WebTests(unittest.TestCase):
         self.assertEqual(self.request('/',headers={'Host':'example.com'})[0],403)
         self.assertEqual(self.request('/jobs/../../README.md')[0],404)
         self.assertEqual(self.request('/api/jobs/missing')[0],404)
+    def test_concurrent_job_rejected(self):
+        entered,release=threading.Event(),threading.Event()
+        def blocked(job_id,settings):
+            entered.set();release.wait(10)
+            with viewer.lock:viewer.jobs[job_id]['status']='done'
+        try:
+            with mock.patch.object(viewer,'render',blocked):
+                status,body=self.request('/api/jobs',{})
+                self.assertEqual(status,202);job_id=json.loads(body)['id']
+                self.assertTrue(entered.wait(2))
+                self.assertEqual(self.request('/api/jobs',{})[0],409)
+        finally:
+            release.set()
+            for _ in range(100):
+                with viewer.lock:finished=not any(j['status']=='running' for j in viewer.jobs.values())
+                if finished:break
+                time.sleep(.01)
+
     def test_render_lifecycle(self):
-        status,body=self.request('/api/jobs',{'scene':'bunny','mode':'tile-dynamic','threads':2,'width':256,'spp':8,'tile':16})
+        status,body=self.request('/api/jobs',{'scene':'bunny','mode':'tile-dynamic','threads':min(2,viewer.MAX_WORKERS),'width':256,'spp':8,'tile':16})
         self.assertEqual(status,202);job=json.loads(body)
         deadline=time.monotonic()+30
         while time.monotonic()<deadline:
@@ -37,6 +59,6 @@ class WebTests(unittest.TestCase):
             if result['status']!='running':break
             time.sleep(.05)
         self.assertEqual(result['status'],'done',result)
-        self.assertEqual(result['result']['triangles'],69451);self.assertEqual(result['result']['actual_threads'],2)
+        self.assertEqual(result['result']['triangles'],69451);self.assertEqual(result['result']['actual_threads'],min(2,viewer.MAX_WORKERS))
         status,png=self.request(result['image']);self.assertEqual(status,200);self.assertTrue(png.startswith(b'\x89PNG\r\n\x1a\n'))
 if __name__=='__main__':unittest.main()

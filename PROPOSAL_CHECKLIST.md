@@ -40,3 +40,12 @@ These map the final package to planned milestones; they do not assert that histo
 ## Scope and limits
 
 The web app is a local demonstration, not a cloud rendering service. The presentation is a self-contained HTML slide deck with arrow-key navigation and print styling. Optional external assets, advanced shading, GPU/MPI, full PBRT scene import and alternative acceleration backends are outside the proposal's required scope. The area light is sampled through random walks; explicit direct-light sampling was not promised. Finite-depth truncation, noise and flat triangle normals are documented. Five measurements are not a statistical guarantee. See `results/proposal/validation.json` for actual checks and sanitizer availability, rather than the old Linux sanitizer log.
+
+## Reproduction hardening
+
+- The repository PDF remains the authoritative proposal; the separately supplied older PDF does not change required scenes or scope.
+- Apple Clang + libomp is supported alongside GCC. Build metadata records the selected compiler and flags.
+- Fresh correctness logs and pipeline runs are under `results/current/`; original M3 measurements are not overwritten.
+- Resumption checks immutable run inputs and validates configuration keys/hashes; reports adapt to supported worker counts and repetitions.
+- `--preset smoke` exercises all stages at reduced quality and is explicitly rejected by the performance-report generator.
+- The web viewer advertises available worker choices and displays scene-loading, BVH and PNG times in addition to render/process time.
